@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
 """
+Created on Tue Jan 16 08:02:07 2018
+
+@author: Alex
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Fri Jan 12 19:27:42 2018
 
 @author: Alex
+
+backpropogation neural net with dropout
 """
 
 # These are all the modules we'll be using later. Make sure you can import them
@@ -69,7 +78,7 @@ with graph.as_default():
   tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels))
   tf_valid_dataset = tf.constant(valid_dataset)
   tf_test_dataset = tf.constant(test_dataset)
-  beta_regul = tf.placeholder(tf.float32)
+
   
   # Variables.
   #input to hidden layer variables
@@ -84,9 +93,10 @@ with graph.as_default():
   
   # Training computation.
   layer1_train=tf.nn.relu(tf.matmul(tf_train_dataset, weights1) + biases1)#layer 1
+  drop1 = tf.nn.dropout(layer1_train, 0.5)
   logits = tf.matmul(layer1_train, weights2) + biases2#this is the output (before going through the softmax function)
   loss = tf.reduce_mean(
-    tf.nn.softmax_cross_entropy_with_logits(labels=tf_train_labels, logits=logits)) +  beta_regul * (tf.nn.l2_loss(weights1) + tf.nn.l2_loss(weights2))
+    tf.nn.softmax_cross_entropy_with_logits(labels=tf_train_labels, logits=logits)) 
   
   # Optimizer.
   optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
@@ -115,7 +125,7 @@ with tf.Session(graph=graph) as session:
     # Prepare a dictionary telling the session where to feed the minibatch.
     # The key of the dictionary is the placeholder node of the graph to be fed,
     # and the value is the numpy array to feed to it.
-    feed_dict = {tf_train_dataset : batch_data, tf_train_labels : batch_labels,beta_regul:1e-3}
+    feed_dict = {tf_train_dataset : batch_data, tf_train_labels : batch_labels}
     _, l, predictions = session.run(
       [optimizer, loss, train_prediction], feed_dict=feed_dict)
     if (step % 500 == 0):
