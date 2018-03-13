@@ -61,17 +61,17 @@ Y_valid = keras.utils.np_utils.to_categorical(Y_valid)
 
 #network parameters (will be tuned)
 layer_1_nodes=50
-layer_2_nodes=30
-layer_3_nodes=15
+layer_2_nodes=50
+layer_3_nodes=50
 layer_4_nodes=15
 layer_5_nodes=5
 
 
 l1=1e-5
 l2_lambda=1e-5
-learning_rate=0.00001
+learning_rate=0.0001
 beta1=0.99
-beta2=0.99
+beta2=0.999
 dropout=0.5
 decay=0.0
 
